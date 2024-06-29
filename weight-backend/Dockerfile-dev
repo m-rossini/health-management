@@ -1,0 +1,24 @@
+# Base image
+FROM python:3.12-slim AS python-base-dev
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        python3-dev \
+        curl \
+        wget \
+        traceroute \
+        iputils-ping \
+        telnet \
+        net-tools \
+        libpq-dev 
+
+# App image
+FROM python-base-dev AS python-base-requirements-dev
+COPY requirements-dev.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# Final image
+FROM python-base-requirements-dev AS python-base-requirements-app-dev
+WORKDIR /app
+COPY ./src .
+CMD ["python", "weight_service/weight_server.py", "--port", "5003", "--host", "0.0.0.0",   "--debug"]   

@@ -1,0 +1,7 @@
+{
+    "urls": {
+        "user-login": "http://localhost:5001",
+        "user-logout": "http://localhost:5001",
+        "weight-api": "http://localhost:5003"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "urls": {
+        "user-login": "http://rossini:5001",
+        "user-logout": "http://rossini:5001",
+        "weight-api": "http://rossini:5003"
+    }
+}
