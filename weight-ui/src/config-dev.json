@@ -1,7 +1,7 @@
 {
     "urls": {
-        "user-login": "http://localhost:5001",
-        "user-logout": "http://localhost:5001",
-        "weight-api": "http://localhost:5003"
+        "user-login": "http://tengelmann:5001",
+        "user-logout": "http://tengelmann:5001",
+        "weight-api": "http://tengelmann:5003"
     }
 }
