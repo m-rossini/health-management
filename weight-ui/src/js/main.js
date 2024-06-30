@@ -1,4 +1,4 @@
-import { formatDateTime, extractFormData, populateTable, addEventToEntries } from './datamanagement.js';
+import { formatDateTime, extractFormData, populateTable, addEventToEntries, populateEntryForm} from './datamanagement.js';
 import { fetchUserData } from './usermanagement.js';
 import { extractAndConvertEntries } from './healthdatamanagement.js';
 
@@ -57,7 +57,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }).then((entries) => {
                         populateTable(entries);
                         return entries;
-                    }).then((entries) => {
+                    }).then( (entries) => {
+                        populateEntryForm(entries[entries.length - 1]);
+                        return entries;
+                    })
+                    .then((entries) => {
                         const deleteBaseUrl = `${baseWeightUrl}/delete_entry/${userData.user_id}`
                         addEventToEntries(deleteBaseUrl)
                     })

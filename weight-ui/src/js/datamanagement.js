@@ -20,7 +20,16 @@ export function extractFormData() {
     return { date_time, weight, height, bp_systolic, bp_diastolic, heart_rate };
 }
 
-export function populateTable(entries) {
+export function populateEntryForm(entry) {
+    document.getElementById('date_time').value = entry.date_time;
+    document.getElementById('weight').value = entry.weight;
+    document.getElementById('height').value = entry.height;
+    document.getElementById('bp_systolic').value = entry.bp_systolic;
+    document.getElementById('bp_diastolic').value = entry.bp_diastolic;
+    document.getElementById('heart_rate').value = entry.heart_rate;
+}
+
+export function populateTable2(entries) {
     const tableBody = document.getElementById('entriesTable').querySelector('tbody');
     tableBody.innerHTML = entries.map((entry, index) => {
         const className = index % 2 === 0 ? 'even-row' : 'odd-row';
@@ -36,6 +45,69 @@ export function populateTable(entries) {
             </tr>
         `;
     }).join('');
+}
+
+export function populateTable(entries) {
+    const tableBody = document.getElementById('entriesTable').querySelector('tbody');
+    tableBody.innerHTML = ''; // Clear existing content (optional)
+    entries.forEach((entry, index) => {
+        const className = index % 2 === 0 ? 'even-row' : 'odd-row';
+        const row = document.createElement('tr');
+        row.classList.add(className);
+
+        appendAllFields(row, entry);
+
+        const deleteButton = createDeleteButton(entry, index);
+        row.appendChild(deleteButton);
+
+        tableBody.appendChild(row);
+
+        row.addEventListener('click', (event) => {
+            const cells = event.currentTarget.cells;
+            const field = {
+                'date_time': cells[0].textContent.trim(),
+                'weight': cells[1].textContent.trim(),
+                'height': cells[2].textContent.trim(),
+                'bp_systolic': cells[3].textContent.trim(),
+                'bp_diastolic': cells[4].textContent.trim(),
+                'heart_rate': cells[5].textContent.trim()
+            }
+            populateEntryForm(field);
+        })
+    });
+}
+
+function appendAllFields(row, entry) {
+    const dateCell = document.createElement('td');
+    dateCell.textContent = entry.date_time;
+    row.appendChild(dateCell);
+
+    const weightCell = document.createElement('td');
+    weightCell.textContent = entry.weight;
+    row.appendChild(weightCell);
+    const heightCell = document.createElement('td');
+    heightCell.textContent = entry.height;
+    row.appendChild(heightCell);
+
+    const bpSystolicCell = document.createElement('td');
+    bpSystolicCell.textContent = entry.bp_systolic;
+    row.appendChild(bpSystolicCell);
+
+    const bpDiastolicCell = document.createElement('td');
+    bpDiastolicCell.textContent = entry.bp_diastolic;
+    row.appendChild(bpDiastolicCell);
+
+    const heartRateCell = document.createElement('td');
+    heartRateCell.textContent = entry.heart_rate;
+    row.appendChild(heartRateCell);
+}
+function createDeleteButton(entry, index) {
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('delete-btn');
+    deleteButton.dataset.id = entry.id;
+    deleteButton.dataset.index = index;
+    deleteButton.textContent = 'Delete';
+    return deleteButton;
 }
 
 export function addEventToEntries(deleteBaseUrl) {
@@ -55,7 +127,7 @@ export function addEventToEntries(deleteBaseUrl) {
                 const deleteUrl = `${deleteBaseUrl}/${entryId}`;
                 await deleteEntry(deleteUrl);
             } catch (error) {
-                alert ('Error deleting entry:', error);
+                alert('Error deleting entry:', error);
                 console.error('Error deleting entry:', error);
                 return;
             }
