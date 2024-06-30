@@ -1,6 +1,10 @@
-import { formatDateTime, extractFormData, populateTable, addEventToEntries, populateEntryForm} from './datamanagement.js';
+import { formatDateTime, extractFormData, populateTable, addEventToEntries, populateEntryForm } from './datamanagement.js';
 import { fetchUserData } from './usermanagement.js';
 import { extractAndConvertEntries } from './healthdatamanagement.js';
+import { setAnalysisButtonListener, updateAnalysisButtonState } from './handleAnalysisButton.js';
+import DataTable from 'datatables.net-dt';
+import 'datatables.net-colreorder-dt';
+import 'datatables.net-responsive-dt';
 
 let configPromise = null;
 let config = undefined
@@ -57,11 +61,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }).then((entries) => {
                         populateTable(entries);
                         return entries;
-                    }).then( (entries) => {
+                    }).then((entries) => {
+                        console.info(">>> entries: ", entries)
                         populateEntryForm(entries[entries.length - 1]);
                         return entries;
-                    })
-                    .then((entries) => {
+                    }).then((entries) => {
                         const deleteBaseUrl = `${baseWeightUrl}/delete_entry/${userData.user_id}`
                         addEventToEntries(deleteBaseUrl)
                     })
@@ -88,6 +92,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         window.location.href = 'index.html';
     }
+
+    let table = new DataTable('#entriesTable', {
+        'paging': false,
+        'searching': false,
+        'ordering': true,
+        'info': false,
+        'colReorder': true,
+        'responsive': false
+    });
+    table.on('draw', updateAnalysisButtonState);
+
+    updateAnalysisButtonState(table);
+    setAnalysisButtonListener(table);
+
 });
 
 document.getElementById('entryForm').addEventListener('submit', async (event) => {
@@ -115,5 +133,9 @@ document.getElementById('entryForm').addEventListener('submit', async (event) =>
     } catch (error) {
         alert(error.message);
     }
+    const table = document.getElementById('entriesTable');
+    updateAnalysisButtonState(table);
+    table.draw();
+
 });
 

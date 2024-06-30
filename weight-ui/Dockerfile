@@ -8,9 +8,8 @@ WORKDIR /app
 COPY package.json ./
 
 # Install dependencies
-RUN npm install && npm install -g typescript && npm install -g webpack webpack-cli
-RUN npm install source-map-loader --save-dev
-
+RUN npm install && npm install -g typescript && npm install -g webpack webpack-cli && npm install source-map-loader --save-dev
+RUN npm install datatables.net-dt && npm install --save datatables.net-colreorder-dt && npm install --save datatables.net-responsive-dt
 # Copy the rest of the application
 COPY . .
 

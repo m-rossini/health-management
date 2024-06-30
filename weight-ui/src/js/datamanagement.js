@@ -1,4 +1,5 @@
 import { deleteEntry } from "./healthdatamanagement";
+import { updateAnalysisButtonState } from "./handleAnalysisButton";
 
 export function formatDateTime(date) {
     const year = date.getFullYear();
@@ -21,6 +22,9 @@ export function extractFormData() {
 }
 
 export function populateEntryForm(entry) {
+    if (!entry) {
+        return;
+    }
     document.getElementById('date_time').value = entry.date_time;
     document.getElementById('weight').value = entry.weight;
     document.getElementById('height').value = entry.height;
@@ -28,25 +32,6 @@ export function populateEntryForm(entry) {
     document.getElementById('bp_diastolic').value = entry.bp_diastolic;
     document.getElementById('heart_rate').value = entry.heart_rate;
 }
-
-export function populateTable2(entries) {
-    const tableBody = document.getElementById('entriesTable').querySelector('tbody');
-    tableBody.innerHTML = entries.map((entry, index) => {
-        const className = index % 2 === 0 ? 'even-row' : 'odd-row';
-        return `
-            <tr class="${className}">
-                <td>${entry.date_time}</td>
-                <td>${entry.weight}</td>
-                <td>${entry.height}</td>
-                <td>${entry.bp_systolic}</td>
-                <td>${entry.bp_diastolic}</td>
-                <td>${entry.heart_rate}</td>
-                <td><button class="delete-btn" data-id="${entry.id}" data-index="${index}">Delete</button></td>
-            </tr>
-        `;
-    }).join('');
-}
-
 export function populateTable(entries) {
     const tableBody = document.getElementById('entriesTable').querySelector('tbody');
     tableBody.innerHTML = ''; // Clear existing content (optional)
@@ -80,25 +65,32 @@ export function populateTable(entries) {
 function appendAllFields(row, entry) {
     const dateCell = document.createElement('td');
     dateCell.textContent = entry.date_time;
+    dateCell.classList.add('left-align');
     row.appendChild(dateCell);
 
     const weightCell = document.createElement('td');
     weightCell.textContent = entry.weight;
+    weightCell.classList.add('right-align');
     row.appendChild(weightCell);
+    
     const heightCell = document.createElement('td');
     heightCell.textContent = entry.height;
+    heightCell.classList.add('right-align');
     row.appendChild(heightCell);
 
     const bpSystolicCell = document.createElement('td');
     bpSystolicCell.textContent = entry.bp_systolic;
+    bpSystolicCell.classList.add('right-align');
     row.appendChild(bpSystolicCell);
 
     const bpDiastolicCell = document.createElement('td');
     bpDiastolicCell.textContent = entry.bp_diastolic;
+    bpDiastolicCell.classList.add('right-align');
     row.appendChild(bpDiastolicCell);
 
     const heartRateCell = document.createElement('td');
     heartRateCell.textContent = entry.heart_rate;
+    heartRateCell.classList.add('right-align');
     row.appendChild(heartRateCell);
 }
 function createDeleteButton(entry, index) {
@@ -147,6 +139,7 @@ export function addEventToEntries(deleteBaseUrl) {
             if (rowToDelete) {
                 rowToDelete.remove();
             }
+            updateAnalysisButtonState(table);
         });
     });
 }
