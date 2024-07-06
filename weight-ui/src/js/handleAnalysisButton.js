@@ -1,24 +1,20 @@
 export function setAnalysisButtonListener(table) {
     const analysisButton = document.getElementById('analysisButton');
-    console.info("Creating the button handler")
+    const tableData = table.data().toArray();
+    localStorage.setItem('analysisData', JSON.stringify(tableData));
+    
     analysisButton.addEventListener('click', function() {
-        // Get table data
-        const tableData = table.data().toArray();
-        console.info(">>>processing button cliclk", tableData);
-        // Store data in localStorage (or you could use sessionStorage)
-        localStorage.setItem('analysisData', JSON.stringify(tableData));
-
-        // Open new window/tab with analysis page
         window.open('analysis.html', '_blank');
     });
 }
 
-export function updateAnalysisButtonState(table) {
+export function updateAnalysisButtonState() {
     const analysisButton = document.getElementById('analysisButton');
-    console.info(">>>table", table )
+    const table = document.getElementById('entriesTable');
     if (!table) {
         analysisButton.enabled = false;
     } else {
-        analysisButton.disabled = table.rows().count() === 0;
+        const rowCount = table.tBodies[0].rows.length;
+        analysisButton.disabled = rowCount === 0;
     }
 }

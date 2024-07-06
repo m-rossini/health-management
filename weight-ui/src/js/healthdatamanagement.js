@@ -13,7 +13,6 @@ export async function fetchEntries(entriesUrl) {
 
 export function convertEntries(entries) {
     try {
-        console.log(">>> Entries: ", entries);
         return JSON.parse(entries); // Assuming data is string-encoded JSON
     } catch (error) {
         console.error('Error parsing response body:', error);
@@ -22,7 +21,6 @@ export function convertEntries(entries) {
 }
 
 export async function extractAndConvertEntries(entriesUrl) {
-    console.info("healthdatamanagement.js>>> extractAndConvert entriesUrl: ", entriesUrl);
     const results = fetchEntries(entriesUrl)
     .then((response) => {
         return response.entries
@@ -54,7 +52,6 @@ export async function deleteEntry(deleteUrl) {
             console.error(msg);
             throw new Error(msg);
         }
-        console.info("healthdatamanagement.js>>> deleteEntry response: ", response);
         return response
     } catch (error) {
         console.error('Error:', error);

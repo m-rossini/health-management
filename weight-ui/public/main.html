@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>Health Tracker</title>
@@ -29,12 +31,14 @@
                     </div>
                     <div class="form-group">
                         <label for="weight">Weight:</label>
-                        <input type="number" step="0.1" id="weight" name="weight" placeholder="Enter weight in kg" required>
+                        <input type="number" step="0.1" id="weight" name="weight" placeholder="Enter weight in kg"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="height">Height:</label>
-                        <input type="number" step="0.1" id="height" name="height" placeholder="Enter height in cm" required>
-                    </div>
+                        <input type="number" step="0.1" id="height" name="height" placeholder="Enter height in cm"
+                            required>
+                    </div>                    
                     <div class="form-group">
                         <label for="bp_systolic">Blood Pressure Systolic:</label>
                         <input type="number" id="bp_systolic" name="bp_systolic" placeholder="Enter systolic value">
@@ -60,8 +64,9 @@
                             <th>Date & Time</th>
                             <th>Weight</th>
                             <th>Height</th>
-                            <th>Blood Pressure Systolic</th>
-                            <th>Blood Pressure Diastolic</th>
+                            <th>BMI</th>
+                            <th>BP Systolic</th>
+                            <th>BP Diastolic</th>
                             <th>Heart Rate</th>
                             <th>Actions</th>
                         </tr>

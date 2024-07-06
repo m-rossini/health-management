@@ -233,3 +233,7 @@ body.login-page {
 .login-button:hover {
     background-color: #0056b3;
 }
+.bmi-tooltip {
+    cursor: help;
+    border-bottom: 1px dotted #000;
+}
