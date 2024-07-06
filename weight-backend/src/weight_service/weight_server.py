@@ -161,6 +161,5 @@ def get_postgres_url(db_user, db_host, db_name):
 
 if __name__ == '__main__':
     arg = parse_args(argparse.ArgumentParser())
-    print(">>>:weight-server. Args", arg)
     db_uri = get_postgres_url_from_args(arg)
     app.run(host='0.0.0.0', port=default_port, debug=arg.debug)

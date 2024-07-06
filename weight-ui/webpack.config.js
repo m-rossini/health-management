@@ -4,6 +4,7 @@ module.exports = {
     login: "./src/js/login.js", 
     register: "./src/js/register.js",
     main:    "./src/js/main.js",
+    analysis: "./src/js/analysis.js",
   },
   devtool: 'source-map',
   mode: 'development',

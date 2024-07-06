@@ -2,6 +2,8 @@ import { formatDateTime, extractFormData, populateTable, addEventToEntries, popu
 import { fetchUserData } from './usermanagement.js';
 import { extractAndConvertEntries } from './healthdatamanagement.js';
 import { setAnalysisButtonListener, updateAnalysisButtonState } from './handleAnalysisButton.js';
+import { getBMIWithCategory } from './datamanagement.js';
+
 import DataTable from 'datatables.net-dt';
 import 'datatables.net-colreorder-dt';
 import 'datatables.net-responsive-dt';
@@ -45,7 +47,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         fetchUserData(urlUserData)
             .then((userData) => {
                 if (userData) {
-                    console.log(">>> userData: ", userData);
                     sessionStorage.setItem('userData', JSON.stringify(userData));
                     document.getElementById('userName').textContent = userData.preferred_name;
 
@@ -59,17 +60,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                         updateLogCountMessage(entries.length);
                         return entries;
                     }).then((entries) => {
+                        entries.map((entry) => {
+                            const bmi = getBMIWithCategory(parseFloat(entry.weight), parseFloat(entry.height));
+                            entry.bmi = bmi.bmi
+                        })
+                        return entries;
+                    }).then((entries) => {
                         populateTable(entries);
                         return entries;
                     }).then((entries) => {
-                        console.info(">>> entries: ", entries)
                         populateEntryForm(entries[entries.length - 1]);
                         return entries;
                     }).then((entries) => {
                         const deleteBaseUrl = `${baseWeightUrl}/delete_entry/${userData.user_id}`
                         addEventToEntries(deleteBaseUrl)
+                        return entries;
+                    }).then((entries) => {
+                        prepareAnalysisArea(entries);
+                        return entries;
                     })
-
                 } else {
                     throw new Error('User data not fetched successfully');
                 }
@@ -93,20 +102,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'index.html';
     }
 
+});
+
+function prepareAnalysisArea(entries) {
     let table = new DataTable('#entriesTable', {
         'paging': false,
         'searching': false,
         'ordering': true,
         'info': false,
         'colReorder': true,
-        'responsive': false
+        'responsive': true,
+        // 'data': entries,
+        'columns': [
+            { data: 'date_time' },
+            { data: 'weight' },
+            { data: 'height' },
+            { data: 'bmi' },
+            { data: 'bp_systolic' },
+            { data: 'bp_diastolic' },
+            { data: 'heart_rate' },
+        ]
     });
-    table.on('draw', updateAnalysisButtonState);
 
-    updateAnalysisButtonState(table);
+    updateAnalysisButtonState();
     setAnalysisButtonListener(table);
-
-});
+}
 
 document.getElementById('entryForm').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -135,7 +155,5 @@ document.getElementById('entryForm').addEventListener('submit', async (event) =>
     }
     const table = document.getElementById('entriesTable');
     updateAnalysisButtonState(table);
-    table.draw();
-
 });
 

@@ -1,6 +1,26 @@
 import { deleteEntry } from "./healthdatamanagement";
 import { updateAnalysisButtonState } from "./handleAnalysisButton";
 
+
+export function calculateBMI(weight, height) {
+    const heightInMeters = height / 100;
+    const bmi = weight / (heightInMeters * heightInMeters);
+    return bmi.toFixed(1);
+}
+
+export function getBMICategory(bmi) {
+    if (bmi < 18.5) return 'Underweight';
+    if (bmi < 25) return 'Normal weight';
+    if (bmi < 30) return 'Overweight';
+    return 'Obese';
+}
+
+export function getBMIWithCategory(weight, height) {
+    const bmi = calculateBMI(weight, height);
+    const category = getBMICategory(bmi);
+    return { bmi, category };
+}
+
 export function formatDateTime(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -36,14 +56,14 @@ export function populateTable(entries) {
     const tableBody = document.getElementById('entriesTable').querySelector('tbody');
     tableBody.innerHTML = ''; // Clear existing content (optional)
     entries.forEach((entry, index) => {
+        console.info(">>>Entry: ", JSON.stringify(entry));
         const className = index % 2 === 0 ? 'even-row' : 'odd-row';
         const row = document.createElement('tr');
         row.classList.add(className);
 
         appendAllFields(row, entry);
-
         const deleteButton = createDeleteButton(entry, index);
-        row.appendChild(deleteButton);
+        row.appendChild(deleteButton)
 
         tableBody.appendChild(row);
 
@@ -53,14 +73,26 @@ export function populateTable(entries) {
                 'date_time': cells[0].textContent.trim(),
                 'weight': cells[1].textContent.trim(),
                 'height': cells[2].textContent.trim(),
-                'bp_systolic': cells[3].textContent.trim(),
-                'bp_diastolic': cells[4].textContent.trim(),
-                'heart_rate': cells[5].textContent.trim()
+                'bp_systolic': cells[4].textContent.trim(),
+                'bp_diastolic': cells[5].textContent.trim(),
+                'heart_rate': cells[6].textContent.trim()
             }
             populateEntryForm(field);
         })
     });
 }
+
+// function createBMI(entry) {
+//     const { bmi, category } = getBMIWithCategory(parseFloat(entry.weight), parseFloat(entry.height));
+//     const bmiCell = document.createElement('td');
+//     const bmiSpan = document.createElement('span');
+//     bmiSpan.textContent = bmi;
+//     bmiSpan.title = category;
+//     bmiSpan.classList.add('right-align');
+//     bmiSpan.classList.add('bmi-tooltip');
+//     bmiCell.appendChild(bmiSpan);
+//     return bmiCell;
+// }
 
 function appendAllFields(row, entry) {
     const dateCell = document.createElement('td');
@@ -77,6 +109,11 @@ function appendAllFields(row, entry) {
     heightCell.textContent = entry.height;
     heightCell.classList.add('right-align');
     row.appendChild(heightCell);
+
+    const bmiCell = document.createElement('td');
+    bmiCell.textContent = entry.bmi 
+    bmiCell.classList.add('right-align');
+    row.appendChild(bmiCell);
 
     const bpSystolicCell = document.createElement('td');
     bpSystolicCell.textContent = entry.bp_systolic;
@@ -139,7 +176,7 @@ export function addEventToEntries(deleteBaseUrl) {
             if (rowToDelete) {
                 rowToDelete.remove();
             }
-            updateAnalysisButtonState(table);
+            updateAnalysisButtonState();
         });
     });
 }
